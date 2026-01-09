@@ -2,6 +2,7 @@ import io
 import numpy as np
 import pandas as pd
 import streamlit as st
+import os
 import plotly.express as px
 import plotly.graph_objects as go
 from scipy.stats import pearsonr
@@ -15,17 +16,19 @@ st.caption("Carga tu CSV (el mismo que usaste en Colab) y verás las mismas vist
 # =========================
 # Carga de archivo (reemplaza google.colab.files.upload)
 # =========================
-uploaded = st.file_uploader("Sube tu archivo CSV", type=["csv"])
 
-if not uploaded:
-    st.info("Sube un CSV para comenzar.")
-    st.stop()
+CSV_PATH = "desercion_escolar.csv"
 
-try:
-    df = pd.read_csv(uploaded)
-except Exception as e:
-    st.error(f"No pude leer el CSV: {e}")
-    st.stop()
+if os.path.exists(CSV_PATH):
+    df = pd.read_csv(CSV_PATH)
+    st.success("Datos cargados automáticamente.")
+else:
+    uploaded_file = st.file_uploader("Sube tu archivo CSV", type=["csv"])
+    if uploaded_file is None:
+        st.info("Sube un CSV para comenzar.")
+        st.stop()
+    df = pd.read_csv(uploaded_file)
+
 
 # =========================
 # Limpieza / preparación (basado en tu notebook)
